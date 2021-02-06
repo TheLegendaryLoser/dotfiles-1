@@ -1,0 +1,120 @@
+XF86AudioRaiseVolume
+  pactl set-sink-volume 0 +5% & \
+  pactl set-sink-volume 1 +5% &
+
+XF86AudioLowerVolume
+  pactl set-sink-volume 0 -5% & \
+  pactl set-sink-volume 1 -5% & 
+
+XF86AudioMute
+  pactl set-sink-mute 0 toggle & \
+  pactl set-sink-mute 1 toggle & 
+
+XF86MonBrightness{Up,Down}{_, + shift}
+  light {-A,-U} {5,1}
+
+super + s
+  mocp -G
+
+super + a
+  mocp -a "music/$(ls -1 ~/music | dmenu -p Playlist:)"
+
+super + d
+  mocp -cs
+
+super + n
+  mocp -f
+
+super + b
+  mocp -r
+
+super + Escape
+  dswitch
+
+super + {_,shift + }{h,j,k,l}
+  bspc node -{f,s} {west,south,north,east}
+
+# this is done to avoid the window taking over a terminal
+super + i
+  palemoon
+
+super + f
+  find-cursor --size 50 --distance 2 --wait 100 --line-width 1 --grow --color \#5e81ac
+
+super + Return
+  alacritty
+
+super + p
+  alacritty -t sound -e pulsemixer
+
+super + m
+  alacritty -t MOCP -e mocp -T transparent-background
+
+super + c
+  alacritty -t Irssi -e irssi
+
+super + y
+  alacritty -t Straw-Viewer -e straw-viewer
+
+super + x
+  xkill
+
+super + r
+  hsetroot -cover "$("$HOME"/.config/bspwm/rand_file.sh "$HOME"/pics/wallpapers/)"
+
+super + w
+  wallpapermode=true sxiv -t "$HOME"/pics/wallpapers/
+
+super + g
+  if pgrep glava ; then pkill glava ; else glava ; fi
+
+super + Tab
+  godesktop | dmenu -p App: | golaunch alacritty
+
+super + space
+  noswallow_dmenu -p Command:
+
+super + alt + control + {h,j,k,l} ; {0-9}
+  bspc node {west,south,north,east} -r 0.{0-9}
+
+super + {_,shift +} q
+  bspc node -{c,k}
+
+super + alt + ctrl + {h,j,k,l}
+  bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+super + alt + shift + {h,j,k,l}
+  bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+# Smart resize, will grow or shrink depending on location.
+# Will always grow for floating nodes.
+super + alt + {h,j,k,l}
+  n=10; \
+  { d1=left;   d2=right;  dx=-$n; dy=0;   \
+  , d1=bottom; d2=top;    dx=0;   dy=$n;  \
+  , d1=top;    d2=bottom; dx=0;   dy=-$n; \
+  , d1=right;  d2=left;   dx=$n;  dy=0;   \
+  } \
+  bspc node --resize $d1 $dx $dy || bspc node --resize $d2 $dx $dy
+
+super + shift + Escape
+  pkill -USR1 -x sxhkd
+
+super + l
+  i3lock-fancy -f Fira-Code-Regular ; ls
+
+super + ctrl + shift + q
+  bspc quit
+
+# focus the next/previous desktop
+super + bracket{left,right}
+  bspc desktop -f {prev,next}
+
+super + {_,shift + }{1-9,0}
+  bspc {desktop -f,node -d} '^{1-9,10}'
+
+super + alt + {1-9,0}
+  bspc node -d '^{1-9,10}' --follow
+
+{_,shift +} Print
+  set date (date) && import {-window root,_} ~/Media/Pics/Screenshots/"$date".png && sleep 2 && notify-send -a Import Screenshot!!!
